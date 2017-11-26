@@ -1,8 +1,10 @@
 import xmlrpc.client
-from socket import gethostbyname, gaierror
+from socket import gaierror
 
 
 class Connector(object):
+
+    __slots__ = ('_url', '_db', '_username', '_password','_common', '_uid', '_models')
 
     def __init__(self, host, database, user, password):
         self._url = host
@@ -40,7 +42,7 @@ class Connector(object):
         if self._uid:
             return self._models.execute_kw(self._db, self._uid, self._password,
                                            attrs[1] if len(attrs) == 2 else ''.join(attrs[1] + '.' + attrs[2]),
-                                           attrs[0], [[['is_company', '=', True], ['customer', '=', True]]])
+                                           attrs[0], values[0])
         else:
             return 'You should auth before use api methods'
 
@@ -57,7 +59,5 @@ class ApiMethod(object):
     def __getattr__(self, method):
         return ApiMethod(self._conn, (self._method + '.' if self._method else '') + method)
 
-    def __call__(self, **kwargs):
-        return self._conn.execute(self._method, kwargs)
-
-
+    def __call__(self, *args):
+        return self._conn.execute(self._method, args)

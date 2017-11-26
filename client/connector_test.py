@@ -14,3 +14,7 @@ print(info)
 cursor = Connector(**info)
 print(cursor.get_server_info())
 print(cursor.login())
+
+api = cursor.get_api()
+print(api.search_count.res.partner([[['is_company', '=', True], ['customer', '=', True]]]))
+print(api.search.res.partner([[['is_company', '=', True], ['customer', '=', True]]], {'offset': 10, 'limit': 5})
